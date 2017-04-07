@@ -1,0 +1,1 @@
+module.exports={"NODE_ENV":"production","PLATFORM":"APP","SDK":"ALL","UPDATE":"TRUE","UPGRADE":"FALSE","outputPath":"tmp_dist","ENV":"UAT","PROJECT":"CMS"}

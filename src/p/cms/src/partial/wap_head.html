@@ -1,0 +1,65 @@
+<% if(PackConfig.PLATFORM == 'WAP'){ %>
+<style> 
+    /*字体图标-另加***/
+    @font-face{
+        font-family: iconwap;
+        src: url('//js.gomein.net.cn/mobile/cms/prom/hybrid/b/components/src/core/fonts/iconwap.ttf') format('truetype');
+    }
+</style>
+<script>
+    if(window.navigator.userAgent.match(/MicroMessenger/i)){
+        window.jsonResult;
+        window.wechatcb = function(jsonResult){
+            //通过config接口注入权限验证配置
+            window.jsonResult = jsonResult
+        }
+        var wxAPIHost = location.host.match(/plus\.com/) ? 'm.gomeplus.com' : 'm.gome.com.cn';
+        /*
+         *  17-3-15  更改为直接调取php接口去请求微信分享的appid等数据
+         * wxAPIBaseHost 调取php接口，需要前端进行base64编码先固定写死
+         * prom.m.gomeplus.com   cHJvbS5tLmdvbWVwbHVzLmNvbQ==
+         * prom.m.gome.com.cn    cHJvbS5tLmdvbWUuY29tLmNu
+         */
+        //var wxAPIBaseHost = location.host.match(/plus\.com/) ? 'cHJvbS5tLmdvbWVwbHVzLmNvbQ==' : 'cHJvbS5tLmdvbWUuY29tLmNu';
+        reqRes([
+            '//'+ wxAPIHost +"/index.php?ctl=product&act=getShareHandler&callback=wechatcb&url=" + encodeURIComponent(window.location.href),
+            //'//'+ wxAPIHost +'/wap/wxController/getWxConfig.do?jsoncallback=wechatcb&url='+encodeURIComponent(window.location.href),
+            '//res.wx.qq.com/open/js/jweixin-1.0.0.js'
+            ],{
+                absolute: true,
+                async: true,
+                onload: function(){
+                    // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+                    var jsonResultDefault = eval('('+jsonResult+')');
+                    wx.config({
+                        debug: false,   //生产时 更换为false
+                        appId: jsonResultDefault.appid,
+                        timestamp: jsonResultDefault.timestamp,
+                        nonceStr: jsonResultDefault.noncestr,
+                        signature: jsonResultDefault.signature,
+                        jsApiList: ['onMenuShareTimeline','onMenuShareAppMessage'],
+                    });
+                    var imgUrl =  '$!{shareImgUrl}'//'$!{shareImgUrl}'
+                    if(!imgUrl){
+                        imgUrl = 'http://js.gomein.net.cn/mobile/cms/prom/hybrid/p/cms/src/images/gomelogo.png?v=20170307'
+                    }
+                    wx.ready(function(){
+                        // 分享给朋友
+                        wx.onMenuShareAppMessage({
+                            title: "$!{pageTitle}",
+                            desc: '$!{shareProms}',
+                            link: String("$!{shareUrl}").replace(location.host.match(/plus\.com/) ? "m.gome.com.cn" : "m.gomeplus.com", location.host.match(/plus\.com/) ? "m.gomeplus.com" : "m.gome.com.cn"),
+                            imgUrl: imgUrl,
+                        });
+                        // 分享到朋友圈
+                        wx.onMenuShareTimeline({
+                            title: "$!{pageTitle}", // 分享标题
+                            link: String("$!{shareUrl}").replace(location.host.match(/plus\.com/) ? "m.gome.com.cn" : "m.gomeplus.com", location.host.match(/plus\.com/) ? "m.gomeplus.com" : "m.gome.com.cn"),
+                            imgUrl: imgUrl, // 分享图标
+                        });
+                    })
+                },
+            })
+    }
+</script>
+<% } %>

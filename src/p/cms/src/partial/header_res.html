@@ -1,0 +1,93 @@
+<script>
+    window.requestAnimationFrame=(function(){
+        return  window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function(callback) {setTimeout(callback, 1000 / 60);}
+    }());
+    /**
+     * 自动媒体查询
+     */
+   /* var maxWidth = 750
+    var minWidth = 320
+
+    var maxSize = 100
+    var minSize = 42.666666
+
+    var width = document.querySelector('html').offsetWidth;
+    var delta =  (maxWidth-minWidth) / (maxSize-minSize);
+    var fontSize = (width - minWidth) / delta + minSize;
+    if(width <= minWidth){
+        fontSize = minSize;
+    }else if(width >=maxWidth){
+        fontSize = maxSize;
+    }
+    document.rem = fontSize;
+    document.querySelector('html').style.fontSize =  (fontSize)+'px';
+    window.addEventListener('resize',function(){
+        var width = document.querySelector('html').offsetWidth;
+        var delta =  (maxWidth-minWidth) / (maxSize-minSize);
+        var fontSize = (width - minWidth) / delta + minSize;
+        if(width <= minWidth){
+            fontSize = minSize;
+        }else if(width >=maxWidth){
+            fontSize = maxSize;
+        }
+        document.rem = fontSize;
+        document.querySelector('html').style.fontSize = (fontSize)+'px';
+    })
+    if(width == 320){
+        document.rem = 40;
+        document.documentElement.style.fontSize = 40+'px';
+        window.addEventListener('resize',function(){
+            document.querySelector('html').style.fontSize = (40)+'px';
+        })
+    }*/
+    document.querySelector('html').style.fontSize = (50)+'px';
+    document.rem = 50;
+    
+    /**
+     * 请求资源方法
+     */
+    if(PackConfig.PLATFORM == 'APP'){
+        if(PackConfig.PROXY){
+            window.RESOURCE = 'http://localhost:8787/dev/'
+        }else
+            window.RESOURCE = '../../../'
+            // window.RESOURCE = 'http://10.144.36.144:3333/'
+    }else{
+        if(PackConfig.ENV == 'UAT'){
+            // window.RESOURCE = '//js.atguat.com.cn/mobile/cms/prom/hybrid/'
+            window.RESOURCE = '../../../'
+        }else if(PackConfig.ENV == 'LIVE'){
+             //window.RESOURCE = '../../../'
+            window.RESOURCE = '//js.gomein.net.cn/mobile/cms/prom/hybrid/'
+        }
+        if(PackConfig.DEV){
+            window.RESOURCE = '../../../'
+        }
+    }
+    
+    reqRes([
+            'b/components/src/core/css/style.css',
+            'b/components/src/core/css/layout.css'
+        ],{
+            combo: true,
+            cache: '20170306',
+            onload: function(){
+                if(PackConfig.PLATFORM == 'WAP' && !navigator.userAgent.match(/gome/) && document.querySelector('#wap_address')){
+                    document.querySelector('#wap_address').style.display = 'block'
+                }
+            }
+        })
+</script>
+<style>
+    .cms:not(.first) {
+        margin-top: .16rem;
+    }
+    .cms .custom{
+        position: relative;
+    }
+    .cms:after {
+        content: ' ';
+        clear: both;
+        display: block;
+    }
+</style>

@@ -1,0 +1,72 @@
+<% if(PackConfig.PLATFORM == 'WAP'){ %>
+ <!--公共头-->
+<nav class="nav" id="wap_address" style="display: none;">
+    <div class="toolbar" style="display:block;">
+        <span class="nav_return nav_ico nav_back" id="nav_return" data-icon="0"></span>
+        <span class="nav_more nav_ico iconn-4" id="nav_more"></span>
+        <span class="nav_home nav_ico iconn-44" id="nav_home"></span>
+        <h2 class="ellipsis">${pageTitle}</h2>
+    </div>
+    <ul class="nav_ulist" id="nav_list" style="display:none" style="z-index: 99999;">
+        <span class="triangle"></span>
+        <li>
+            <a id="nav_classify" title="分类" href="//m.gome.com.cn/goods_class.html">
+                <span class="iconn-15"></span>
+                分类
+            </a>
+        </li>
+        <li>
+            <a id="nav_shopcar" title="购物车" href="//m.gome.com.cn/shopping_cart.html">
+                <span class="iconn-32"></span>
+                购物车
+            </a>
+        </li>
+        <li>
+            <a id="nav_mygome" title="我的国美" onclick="$g.login();">
+                <span class="iconn-90"></span>
+                我的国美
+            </a>
+        </li>
+    </ul>
+</nav>
+<script>
+    !(function(exports, module){
+        if(window.location.host.match(/gomeplus|uatplus/)){
+            //无奈双域名
+            document.querySelector('#nav_classify').href = document.querySelector('#nav_classify').href.replace('gome.com.cn','gomeplus.com')
+            document.querySelector('#nav_shopcar').href = document.querySelector('#nav_shopcar').href.replace('gome.com.cn','gomeplus.com')
+        }
+        document.querySelector('#nav_home').addEventListener('click',function(){
+            if($g)
+                window.location.href = $g.host.m
+            else
+                window.location.href = '//m.gomeplus.com'
+        })
+        var show = false;
+        document.querySelector('#nav_more').addEventListener('click',function(){
+            if(!show){
+                document.querySelector('#nav_list').style.display = 'block';
+                show = true
+            }else{
+                document.querySelector('#nav_list').style.display = 'none';
+                show = false
+            }
+        })
+        document.querySelector('#nav_return').addEventListener('click',function(){
+            if(window.history.length > 2){
+                window.history.back()
+            }else{
+                if($g)
+                    window.location.href = $g.host.m
+                else
+                    window.location.href = '//m.gomeplus.com'
+            }
+        });
+        setTimeout(function(){
+            if(PackConfig.PLATFORM == 'WAP' && !navigator.userAgent.match(/gome/) && document.querySelector('#wap_address')){
+                document.querySelector('#wap_address').style.display = 'block'
+            }
+        },100)
+    })(window, window);
+</script>
+<% } %>

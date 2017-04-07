@@ -1,0 +1,15 @@
+@import '../../../../../b/components/src/core/less/layout.less';
+@import '../../../../../b/components/src/core/less/var.less';
+@name-line-height:  1.3 * @font-nm-sm;
+@img-height: 2rem;
+@img-width: 2rem;
+@container-padding: .24rem;
+.goods-in-list(@column){
+    .flexgrid {
+        .product,
+        .blocker {
+            .flexitem(1);
+        }
+        .grid(@column);
+    }
+}

@@ -1,0 +1,134 @@
+<!--<script scr="../../../b/plugin_core/src/cordova.js"></script>-->
+<script>
+(function(){
+    var height = document.documentElement.clientHeight - 1.04 * 50
+    document.querySelector('#wrapper').style.minHeight = height + 'px'
+})();
+if(!window.location.protocol.match(/http/i)){
+    reqRes(['b/plugin_core/src/cordova.js'])
+}
+reqRes([
+    <% if(PackConfig.PLATFORM == 'WAP'){ %>
+        'b/components/src/vendor/vue.rls.js'
+    <% }else{ %>
+        'b/components/src/vendor/vue.min.js'
+    <% } %>
+]);
+//请求js
+reqRes([
+    'b/components/src/vendor/zepto.min.js',
+    'b/components/src/vendor/zepto.appstart.js',
+    'p/cms/src/utils/gomeBridge.js',
+	'b/components/src/vendor/fastclick.min.js',
+    'b/components/src/vendor/base64.min.js',
+	'b/components/src/utils/queryparser.js'
+],{
+    cache: '<%= timestamp%>',
+    combo: true
+});
+</script>
+<script type="text/javascript">
+//polyfill
+FastClick.attach(document.body);
+
+reqRes([
+    'p/cms/src/components.js',
+    "p/cms/src/build.js"
+],{
+    cache: '<%= timestamp%>',
+    combo: true
+})
+
+</script>
+<script>
+if(!!window.location.protocol.match(/http[s]?/i)){
+    reqRes([
+        'wap/js/public/omniture/s_code.js',
+        'sitemonitor/wap.js',
+    ],{
+        absolute: false,
+        combo: true,
+        async: true,
+        onload: function(){
+            !(function(exports, module){
+                if(window.s && !$g.env.hybrid){
+                    var share_title = "$!{pageTitle}"
+                    var home_omniture = QueryParser.parse(location.href).home_omniture;
+                    var home_position = QueryParser.parse(location.href).home_position;
+                    var title_type = "促销专区:";
+                    if("$!{bigDataInfo.titleType}"){
+                        title_type = "$!{bigDataInfo.titleType}";
+                        title_type = title_type + ":";
+                    }
+                    
+                    s.pageName = title_type +　share_title;//"促销专区:"+share_title;
+                    s.channel  = s.pageName.split(':')[0];
+                    s.prop1    = s.pageName.split(':')[0];
+                    s.prop2    = s.pageName;
+                    s.prop3    = s.pageName + ":1";
+                    s.prop4    = "列表:商品";
+                    
+                    
+                    if("$!{bigDataInfo.titleType}"){
+                        s.channel  = s.pageName.split(':')[0];
+                        s.prop1    = s.pageName;
+                        s.prop2    = s.pageName;
+                        s.prop3    = s.pageName;
+                        s.prop4    = s.pageName;
+                    }
+                    if(home_position == 'zyh' || home_position == 'zpp'){
+                        var strs = new Array();
+                        var strs=home_omniture.split('~');
+                        s.eVar3 = '首页:'+decodeURIComponent(strs[0])+':商品列表:'+share_title;
+                        s.prop51  = '首页_'+decodeURIComponent(strs[0])+':商品列表:'+share_title;
+                    }else if(home_position == 'dpda'){
+                        var strs = new Array();
+                        var strs=home_omniture.split('~');
+                        s.eVar3 = '首页:'+decodeURIComponent(strs[0])+':'+strs[1];
+                        s.prop51  = '首页_'+decodeURIComponent(strs[0])+':'+strs[1];
+                    }else if(home_position == 'zjx'){
+                        s.eVar3  = '首页:'+s.pageName;
+                        s.prop51 = '首页_'+s.pageName;
+                    }else if(home_position == 'sj'){
+                        s.eVar3 = '首页:首焦:'+home_omniture;
+                        s.prop51  = '首页_首焦_'+home_omniture;
+                    }else if(home_position == 'hdlc'){
+                        var strs = new Array();
+                        var strs=home_omniture.split('~');
+                        s.eVar3 = '首页:'+strs[0]+':'+strs[1];
+                        s.prop51  = '首页_'+strs[0]+'_'+strs[1];  
+                    }else if(home_position == 'kjrk'){
+                         var k_name=decodeURIComponent(home_omniture)
+                         s.eVar3 = '首页:快捷入口:'+k_name;
+                         s.prop51  = '首页_快捷入口_'+k_name;
+                    }else if(home_position == 'dp'){
+                        s.pageName = "促销专区:店铺频道:"+home_omniture;
+                        s.prop2 = "促销专区:促销活动列表页:店铺频道";
+                        s.prop3=  "促销专区:促销活动列表页:店铺频道:"+home_omniture+":首页";
+                        s.eVar3="首页:店铺频道:"+home_omniture;
+                        s.prop51="首页_店铺频道_"+home_omniture;
+                    }else if(home_position == 'dpd'){
+                        var strs = new Array();
+                        var strs=home_omniture.split('~');
+                        s.prop51  = '大牌down_p'+strs[0]+'_'+strs[1]+'_'+strs[2];
+                    }
+                    if($g.env.app){
+                        s.eVar44 = "APP嵌套促销活动:{" +share_title+ "}";
+                    }else {
+                        s.eVar44 = "WAP促销活动:{" +share_title+ "}";
+                    }
+                }
+            })(window, window);
+            var s_code = s.t();
+            if(s_code){
+                var el = document.createElement('img')
+                el.src = $(s_code).attr('src')
+                el.style.position = 'absolute';
+                el.style.zIndex = -1;
+                el.style.width = '1px';
+                document.body.appendChild(el)
+            }
+        }
+    },'//js.gomein.net.cn/')
+}
+</script>
